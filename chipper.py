@@ -1,34 +1,27 @@
 import os
+
 from pydub import AudioSegment
 
-root_directory = "experiment"
-source_directory = "source"
-result_directory = "split"
+directory = os.getcwd()
+results = "split"
 five_minutes = 300 * 1000
 eight_minutes = 480 * 1000
 
 
-def split_audio(audio_file_name: str):
-    f = os.path.join(root_directory, source_directory, audio_file_name)
+def split_audio(audio_file_name: str) -> None:
+    f = os.path.join(directory, audio_file_name)
+    r = audio_file_name[:-4]
     source_audio = AudioSegment.from_wav(f)
     first_five_minutes = source_audio[:five_minutes]
-    first_five_minutes.export(
-        os.path.join(
-            root_directory, result_directory, f"{audio_file_name}_first_5_minutes.wav"
-        )
-    )
+    first_five_minutes.export(os.path.join(directory, results, f"{r}_first_5_min.wav"))
     last_three_minutes = source_audio[five_minutes:eight_minutes]
-    last_three_minutes.export(
-        os.path.join(
-            root_directory, result_directory, f"{audio_file_name}_last_3_min.wav"
-        )
-    )
+    last_three_minutes.export(os.path.join(directory, results, f"{r}_last_3_min.wav"))
 
 
 def main() -> None:
-    for file_name in os.listdir(f"{root_directory}/{source_directory}"):
-        f = os.path.join(root_directory, source_directory, file_name)
-        split_audio(f)
+    os.mkdir(os.path.join(directory, results))
+    for file_name in os.listdir(directory):
+        split_audio(file_name)
 
 
 if __name__ == "__main__":
